@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes App</title>
+    <style>
+        body {
+ 
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color:#ffa6c1;
+            color: white;
+            border-radius: 8px;
+        }
+        h1 {
+         font-family: fantacy;
+            
+ text-align: center;
+            margin-bottom: 20px;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 5px;
+            box-sizing: border-box;
+font-size:20px;
+font-family: "Poppins"; 
+
+        }
+        input {
+            background-color: #fff;
+            color: #333;
+        }
+        button {
+            background-color:#594d58;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #3f3f4e;
+        }
+        .note-item {
+            background-color: #fff;
+            color: #333;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            position: relative;
+        }
+        .note-tag {
+            font-style: italic;
+            color: #888;
+        }
+        .note-actions {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+        .note-actions button {
+            background-color: #dc3545;
+            margin: 2px;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            padding: 3px 5px;  
+            font-size: 12px;    
+        }
+        .note-actions button:hover {
+            background-color: #c82333;
+        }
+        .note-actions .edit {
+            background-color: #28a745;
+        }
+        .note-actions .edit:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Notes App</h1>
+        <input type="text" id="noteText" placeholder="Add a new note">
+        <input type="text" id="noteTag" placeholder="Tag (optional)">
+        <button onclick="addNote()">Add Note</button>
+        <input type="text" id="searchText" oninput="searchNotes()" placeholder="Search notes">
+        <div class="notes-list" id="notesList">
+        </div>
+        </div>
+<script>
+        let notes = [];
+        let editIndex = -1;  
+        function addNote() {
+            const noteText = document.getElementById("noteText").value;
+            const noteTag = document.getElementById("noteTag").value;
+
+            if (noteText === "") {
+                alert("Please enter a note!");
+                return;
+            }
+if (editIndex === -1) {
+                const note = { text: noteText, tag: noteTag };
+                notes.push(note);
+            } else {
+                notes[editIndex] = { text: noteText, tag: noteTag };
+                editIndex = -1; // Reset edit mode
+            }
+            displayNotes(notes);
+            document.getElementById("noteText").value = "";
+            document.getElementById("noteTag").value = "";
+        }
+        function displayNotes(notesArray) {
+            const notesList = document.getElementById("notesList");
+           notesList.innerHTML = "";
+            notesArray.forEach((note, index) => {
+                let noteItem = document.createElement("div");
+                noteItem.classList.add("note-item");
+noteItem.innerHTML = `
+                    <strong>Note:</strong> ${note.text} <br>
+                    <span class="note-tag">Tag: ${note.tag || 'None'}</span>
+                    <div class="note-actions">
+                        <button class="edit" onclick="editNote(${index})">Edit</button>
+                        <button onclick="deleteNote(${index})">Delete</button>
+                    </div>
+                `;
+
+                notesList.appendChild(noteItem);
+            });
+        }
+
+        // Function to delete a note
+        function deleteNote(index) {
+            notes.splice(index, 1); 
+            displayNotes(notes);     
+        }
+        function editNote(index) {
+            document.getElementById("noteText").value = notes[index].text;
+            document.getElementById("noteTag").value = notes[index].tag;
+            editIndex = index; 
+        }
+        function searchNotes() {
+            const searchText = document.getElementById("searchText").value.toLowerCase();
+            const filteredNotes = notes.filter(note => 
+                note.text.toLowerCase().includes(searchText) ||
+                note.tag.toLowerCase().includes(searchText)
+            );
+            displayNotes(filteredNotes);
+        }
+    </script>
+</body>
+</html>
